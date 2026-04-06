@@ -584,11 +584,16 @@ window.addEventListener("load", () => {
   initCharts();
   applyLang();
   render();
-  setTimeout(() => {
-    document.getElementById("splash").classList.add("fade");
-  }, 1500);
+
+  // remove splash as soon as everything is ready
+  const splash = document.getElementById("splash");
+  splash.classList.add("fade");
+
+  // fully hide it after transition ends
+  splash.addEventListener("transitionend", () => {
+    splash.style.display = "none";
+  });
 });
-</script>
 
 </body>
 </html>
