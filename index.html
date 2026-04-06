@@ -300,326 +300,290 @@ body.light .chart-section{background:#e0e0e0;}
 </div>
 
 <script>
-let tasks=[];
-let chart,pieChart;
-let openSections={high:false,medium:false,low:false,chart:false};
-let currentLang=localStorage.getItem("lang")||"en";
+let tasks = [];
+let chart, pieChart;
+let openSections = {high:false, medium:false, low:false, chart:false};
+let currentLang = localStorage.getItem("lang") || "en";
 
 /* LANGUAGE */
-const lang={
-en:{
-title:"📋 My To-Do List",
-tasks:"📝 Tasks",
-reports:"📊 Reports",
-settings:"⚙️ Settings",
-add:"➕ Add Task",
-enter:"Enter task",
-filter:"📅 Filter Tasks",
-chart:"📊 Weekly Progress",
-monthly:"📊 Monthly Report",
-theme:"Theme - 🌗",
-lang:"Language - 🌏",
-created:"Created on"
-},
-vi:{
-title:"📋 Danh sách công việc",
-tasks:"📝 Nhiệm vụ",
-reports:"📊 Báo cáo",
-settings:"⚙️ Cài đặt",
-add:"➕ Thêm nhiệm vụ",
-enter:"Nhập nhiệm vụ",
-filter:"📅 Lọc nhiệm vụ",
-chart:"📊 Tiến độ tuần",
-monthly:"📊 Báo cáo tháng",
-theme:"Giao diện - 🌗",
-lang:"Ngôn ngữ - 🌏",
-created:"Tạo lúc"
-}
+const lang = {
+  en: {
+    title:"📋 My To-Do List",
+    tasks:"📝 Tasks",
+    reports:"📊 Reports",
+    settings:"⚙️ Settings",
+    add:"➕ Add Task",
+    enter:"Enter task",
+    filter:"📅 Filter Tasks",
+    chart:"📊 Weekly Progress",
+    monthly:"📊 Monthly Report",
+    theme:"Theme - 🌗",
+    lang:"Language - 🌏",
+    created:"Created on"
+  },
+  vi: {
+    title:"📋 Danh sách công việc",
+    tasks:"📝 Nhiệm vụ",
+    reports:"📊 Báo cáo",
+    settings:"⚙️ Cài đặt",
+    add:"➕ Thêm nhiệm vụ",
+    enter:"Nhập nhiệm vụ",
+    filter:"📅 Lọc nhiệm vụ",
+    chart:"📊 Tiến độ tuần",
+    monthly:"📊 Báo cáo tháng",
+    theme:"Giao diện - 🌗",
+    lang:"Ngôn ngữ - 🌏",
+    created:"Tạo lúc"
+  }
 };
 
-function applyLang(){
-let t=lang[currentLang];
-document.getElementById("title").textContent=t.title;
-document.getElementById("navTasks").textContent=t.tasks;
-document.getElementById("navReports").textContent=t.reports;
-document.getElementById("navSettings").textContent=t.settings;
-document.getElementById("addTaskBtn").textContent=t.add;
-document.getElementById("taskInput").placeholder=t.enter;
-document.getElementById("filterTitle").textContent=t.filter;
-document.getElementById("chartTitle").textContent=t.chart;
-document.getElementById("monthlyTitle").textContent=t.monthly;
-document.getElementById("themeLabel").textContent=t.theme;
-document.getElementById("langLabel").textContent=t.lang;
+function applyLang() {
+  let t = lang[currentLang];
+  document.getElementById("title").textContent = t.title;
+  document.getElementById("navTasks").textContent = t.tasks;
+  document.getElementById("navReports").textContent = t.reports;
+  document.getElementById("navSettings").textContent = t.settings;
+  document.getElementById("addTaskBtn").textContent = t.add;
+  document.getElementById("taskInput").placeholder = t.enter;
+  document.getElementById("filterTitle").textContent = t.filter;
+  document.getElementById("chartTitle").textContent = t.chart;
+  document.getElementById("monthlyTitle").textContent = t.monthly;
+  document.getElementById("themeLabel").textContent = t.theme;
+  document.getElementById("langLabel").textContent = t.lang;
 
-document.getElementById("priorityInput").innerHTML=`
-<option value="high">🔴</option>
-<option value="medium">🟡</option>
-<option value="low">🟢</option>`;
+  document.getElementById("priorityInput").innerHTML = `
+    <option value="high">🔴</option>
+    <option value="medium">🟡</option>
+    <option value="low">🟢</option>
+  `;
 }
 
 /* NAV */
-document.getElementById("navTasks").onclick=()=>switchPage("tasksPage");
-document.getElementById("navReports").onclick=()=>switchPage("reportsPage");
-document.getElementById("navSettings").onclick=()=>switchPage("settingsPage");
+document.getElementById("navTasks").onclick = () => switchPage("tasksPage");
+document.getElementById("navReports").onclick = () => switchPage("reportsPage");
+document.getElementById("navSettings").onclick = () => switchPage("settingsPage");
 
-function switchPage(id){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-document.getElementById(id).classList.add("active");
+function switchPage(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 }
 
 /* CHART */
-function initCharts(){
-chart=new Chart(document.getElementById("chart"),{
-  type:"bar",
-  data:{
-    labels:["Completed","Missed","Late"],
-    datasets:[{
-      label:"Tasks",
-      data:[0,0,0],
-      backgroundColor:["limegreen","red","gold"]
-    }]
-  },
-  options:{
-    responsive:true,
-    maintainAspectRatio:false,
-    animation:{
-      duration:600,
-      easing:"easeOutQuart"
+function initCharts() {
+  chart = new Chart(document.getElementById("chart"), {
+    type: "bar",
+    data: {
+      labels:["Completed","Missed","Late"],
+      datasets:[{
+        label:"Tasks",
+        data:[0,0,0],
+        backgroundColor:["limegreen","red","gold"]
+      }]
     },
-    plugins:{
-      legend:{
-        display:false   // removes weird undefined legend
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      animation:{duration:600, easing:"easeOutQuart"},
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:(ctx)=> `${ctx.label}: ${ctx.raw}`}}
       },
-      tooltip:{
-        callbacks:{
-          label:(ctx)=> `${ctx.label}: ${ctx.raw}`
-        }
-      }
-    },
-    scales:{
-      y:{
-        beginAtZero:true,
-        ticks:{precision:0}
-      }
+      scales:{y:{beginAtZero:true, ticks:{precision:0}}}
     }
-  }
-});
+  });
+
+  pieChart = new Chart(document.getElementById("pieChart"), {
+    type: "pie",
+    data: { labels: ["Completed","Missed","Late"], datasets: [{ data:[0,0,0], backgroundColor:["limegreen","red","gold"] }] },
+    options: { responsive:true, plugins:{legend:{position:'bottom'}} }
+  });
 }
 
-function updateChart(){
+function updateChart() {
   let completed=0, missed=0, late=0;
-  let now=new Date();
+  let now = new Date();
 
-  tasks.forEach(t=>{
+  tasks.forEach(t => {
     let hasDeadline = t.deadline;
     let d = hasDeadline ? new Date(t.deadline) : null;
 
     if(t.done){
-      if(hasDeadline && new Date(t.completedAt) > d){
-        late++;
-      } else {
-        completed++;
-      }
-    } else if(hasDeadline && d < now){
-      missed++;
-    }
+      if(hasDeadline && new Date(t.completedAt) > d){ late++; }
+      else { completed++; }
+    } else if(hasDeadline && d < now){ missed++; }
   });
 
-  chart.data.datasets[0].data=[completed, missed, late];
-
+  chart.data.datasets[0].data = [completed, missed, late];
   chart.options.scales.y.max = tasks.length + 1;
-
   chart.update();
 }
 
 /* MONTHLY */
-function generateMonthly(){
-let months={};
+function generateMonthly() {
+  let months = {};
+  tasks.forEach(t => {
+    if(!t.deadline) return;
+    let m = t.deadline.slice(0,7);
+    if(!months[m]) months[m]=[];
+    months[m].push(t);
+  });
 
-tasks.forEach(t=>{
-if(!t.deadline)return;
-let m=t.deadline.slice(0,7);
-if(!months[m])months[m]=[];
-months[m].push(t);
-});
+  let select = document.getElementById("monthSelect");
+  select.innerHTML = "";
 
-let select=document.getElementById("monthSelect");
-select.innerHTML="";
+  Object.keys(months).forEach(m => {
+    let opt = document.createElement("option");
+    opt.value = m;
+    opt.textContent = m;
+    select.appendChild(opt);
+  });
 
-Object.keys(months).forEach(m=>{
-let opt=document.createElement("option");
-opt.value=m;
-opt.textContent=m;
-select.appendChild(opt);
-});
-
-select.onchange=()=>{
-let data=[0,0,0];
-months[select.value].forEach(t=>{
-let d=new Date(t.deadline);
-if(t.done){
-if(new Date(t.completedAt)>d)data[2]++;
-else data[0]++;
-}else if(d<new Date())data[1]++;
-});
-pieChart.data.datasets[0].data=data;
-pieChart.update();
-};
+  select.onchange = () => {
+    let data=[0,0,0];
+    months[select.value].forEach(t=>{
+      let d = new Date(t.deadline);
+      if(t.done){ if(new Date(t.completedAt)>d) data[2]++; else data[0]++; }
+      else if(d<new Date()) data[1]++;
+    });
+    pieChart.data.datasets[0].data = data;
+    pieChart.update();
+  };
 }
 
 /* FILTER */
-function getFilteredTasks(){
-let from=fromDate.value,to=toDate.value;
-return tasks.filter(t=>{
-if(!t.deadline)return true;
-if(from&&t.deadline<from)return false;
-if(to&&t.deadline>to)return false;
-return true;
-});
+function getFilteredTasks() {
+  let from = fromDate.value, to = toDate.value;
+  return tasks.filter(t=>{
+    if(!t.deadline) return true;
+    if(from && t.deadline < from) return false;
+    if(to && t.deadline > to) return false;
+    return true;
+  });
 }
 
 /* RENDER */
-function render(){
-let sections=document.getElementById("sections");
-sections.innerHTML="";
+function render() {
+  let sections = document.getElementById("sections");
+  sections.innerHTML = "";
 
-let filtered=getFilteredTasks();
-let groups={high:[],medium:[],low:[]};
+  let filtered = getFilteredTasks();
+  let groups = {high:[], medium:[], low:[]};
+  filtered.forEach(t => groups[t.priority].push({...t,index:tasks.indexOf(t)}));
 
-filtered.forEach(t=>groups[t.priority].push({...t,index:tasks.indexOf(t)}));
+  Object.keys(groups).forEach(level=>{
+    let list = groups[level];
+    let done = list.filter(t=>t.done).length;
 
-Object.keys(groups).forEach(level=>{
-let list=groups[level];
-let done=list.filter(t=>t.done).length;
+    let section = document.createElement("div");
+    section.className = `section ${level} ${openSections[level]?"open":""}`;
+    section.innerHTML = `
+      <div class="section-header" onclick="toggleSection('${level}')">
+        <span>${level.toUpperCase()}</span>
+        <span>${done}/${list.length}</span>
+      </div>
+      <div class="section-content"><ul></ul></div>
+    `;
+    sections.appendChild(section);
 
-let section=document.createElement("div");
-section.className=`section ${level} ${openSections[level]?"open":""}`;
+    let ul = section.querySelector("ul");
+    list.forEach(t=>{
+      let li = document.createElement("li");
+      if(t.done) li.classList.add("done");
+      li.innerHTML = `
+        <div class="task-top">
+          <input type="checkbox" ${t.done?"checked":""} onclick="toggle(${t.index})">
+          <textarea onchange="edit(${t.index},this.value)">${t.text}</textarea>
+          <button class="delete-btn" onclick="del(${t.index})">❌</button>
+        </div>
+        <div class="task-bottom">
+          <input type="date" value="${t.deadline||''}" onchange="updateDate(${t.index},this.value)">
+          <select onchange="updatePriority(${t.index},this.value)">
+            <option value="high">🔴</option>
+            <option value="medium">🟡</option>
+            <option value="low">🟢</option>
+          </select>
+        </div>
+        <div class="date-text">
+          ${t.deadline?"📅 "+t.deadline:""}
+          ${t.completedAt?" | ✅ "+t.completedAt.split("T")[0]:""}
+          <br>
+          ${t.createdAt?lang[currentLang].created+": "+t.createdAt.split("T")[0]:""}
+        </div>
+      `;
+      ul.appendChild(li);
+    });
+  });
 
-section.innerHTML=`
-<div class="section-header" onclick="toggleSection('${level}')">
-<span>${level.toUpperCase()}</span>
-<span>${done}/${list.length}</span>
-</div>
-<div class="section-content"><ul></ul></div>`;
+  document.querySelector(".chart-section").classList.toggle("open", openSections.chart);
 
-sections.appendChild(section);
-
-let ul=section.querySelector("ul");
-
-list.forEach(t=>{
-let li=document.createElement("li");
-if(t.done) li.classList.add("done");
-
-li.innerHTML=`
-<div class="task-top">
-<input type="checkbox" ${t.done?"checked":""} onclick="toggle(${t.index})">
-<textarea onchange="edit(${t.index},this.value)">${t.text}</textarea>
-<button class="delete-btn" onclick="del(${t.index})">❌</button>
-</div>
-
-<div class="task-bottom">
-<input type="date" value="${t.deadline||''}" onchange="updateDate(${t.index},this.value)">
-<select onchange="updatePriority(${t.index},this.value)">
-<option value="high">🔴</option>
-<option value="medium">🟡</option>
-<option value="low">🟢</option>
-</select>
-</div>
-
-<div class="date-text">
-${t.deadline?"📅 "+t.deadline:""}
-${t.completedAt?" | ✅ "+t.completedAt.split("T")[0]:""}
-<br>
-${t.createdAt?lang[currentLang].created+": "+t.createdAt.split("T")[0]:""}
-</div>`;
-
-ul.appendChild(li);
-});
-});
-
-document.querySelector(".chart-section").classList.toggle("open",openSections.chart);
-
-updateChart();
-generateMonthly();
-applyLang();
+  updateChart();
+  generateMonthly();
+  applyLang();
 }
 
 /* ACTIONS */
 function toggle(i){
   tasks[i].done = !tasks[i].done;
-
-  tasks[i].completedAt = tasks[i].done
-    ? new Date().toISOString()
-    : null;
-
+  tasks[i].completedAt = tasks[i].done ? new Date().toISOString() : null;
   save();
   render();
-
-  // 🔥 force update AFTER render finishes
-  setTimeout(()=>{
-    updateChart();
-  }, 0);
+  setTimeout(()=>{ updateChart(); },0);
 }
-function del(i){tasks.splice(i,1);save();render();}
-function edit(i,v){tasks[i].text=v;save();}
-function updateDate(i,v){tasks[i].deadline=v;save();render();}
-function updatePriority(i,v){tasks[i].priority=v;save();render();}
+function del(i){ tasks.splice(i,1); save(); render(); }
+function edit(i,v){ tasks[i].text=v; save(); }
+function updateDate(i,v){ tasks[i].deadline=v; save(); render(); }
+function updatePriority(i,v){ tasks[i].priority=v; save(); render(); }
 
 /* ADD */
-document.getElementById("addTaskBtn").onclick=()=>{
-let t=document.getElementById("taskInput");
-let d=document.getElementById("deadlineInput");
-let p=document.getElementById("priorityInput");
+document.getElementById("addTaskBtn").onclick = () => {
+  let t = document.getElementById("taskInput");
+  let d = document.getElementById("deadlineInput");
+  let p = document.getElementById("priorityInput");
 
-if(!t.value.trim())return;
+  if(!t.value.trim()) return;
 
-tasks.push({
-text:t.value,
-deadline:d.value,
-priority:p.value,
-done:false,
-completedAt:null,
-createdAt:new Date().toISOString()
-});
+  tasks.push({
+    text: t.value,
+    deadline: d.value,
+    priority: p.value,
+    done: false,
+    completedAt: null,
+    createdAt: new Date().toISOString()
+  });
 
-t.value="";d.value="";
-save();
-render();
-updateChart();
+  t.value = ""; d.value = "";
+  save();
+  render();
+  updateChart();
 };
 
 /* TOGGLE */
-function toggleSection(level){
-openSections[level]=!openSections[level];
-render();
-}
-function toggleChart(){
-openSections.chart=!openSections.chart;
-render();
-}
+function toggleSection(level){ openSections[level]=!openSections[level]; render(); }
+function toggleChart(){ openSections.chart=!openSections.chart; render(); }
 
 /* THEME */
-document.getElementById("themeSelect").onchange=e=>{
-document.body.classList.toggle("light",e.target.value==="light");
+document.getElementById("themeSelect").onchange = e => {
+  document.body.classList.toggle("light", e.target.value==="light");
 };
 
 /* LANGUAGE */
-document.getElementById("langSelect").onchange=e=>{
-currentLang=e.target.value;
-localStorage.setItem("lang",currentLang);
-applyLang();
-render();
+document.getElementById("langSelect").onchange = e => {
+  currentLang = e.target.value;
+  localStorage.setItem("lang", currentLang);
+  applyLang();
+  render();
 };
 
 /* STORAGE */
-function save(){localStorage.setItem("tasks",JSON.stringify(tasks));}
-function load(){tasks=JSON.parse(localStorage.getItem("tasks"))||[];}
+function save(){ localStorage.setItem("tasks", JSON.stringify(tasks)); }
+function load(){ tasks = JSON.parse(localStorage.getItem("tasks"))||[]; }
 
-load();
-initCharts();
-applyLang();
-render();
-  window.addEventListener("load", () => {
+/* INIT EVERYTHING AFTER LOAD */
+window.addEventListener("load", () => {
+  load();
+  initCharts();
+  applyLang();
+  render();
   setTimeout(() => {
     document.getElementById("splash").classList.add("fade");
   }, 1500);
