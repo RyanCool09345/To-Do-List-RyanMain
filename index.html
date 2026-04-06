@@ -479,69 +479,53 @@ return true;
 }
 
 /* RENDER */
-function render(){
-let sections=document.getElementById("sections");
-sections.innerHTML="";
+function renderSections() {
+  const priorities = ["High", "Medium", "Low"];
 
-let filtered=getFilteredTasks();
-let groups={high:[],medium:[],low:[]};
+  priorities.forEach(priority => {
+    const sectionContainer = document.getElementById(priority + "-section");
 
-filtered.forEach(t=>groups[t.priority].push({...t,index:tasks.indexOf(t)}));
+    // clear old tasks
+    sectionContainer.innerHTML = "";
 
-Object.keys(groups).forEach(level=>{
-let list=groups[level];
-let done=list.filter(t=>t.done).length;
+    // get tasks for this priority
+    const sectionTasks = tasks
+      .filter(task => task.priority === priority)
+      .sort((a, b) => {
+        if (a.completed !== b.completed) return a.completed - b.completed;
+        return new Date(a.date) - new Date(b.date);
+      });
 
-let section=document.createElement("div");
-section.className=`section ${level} ${openSections[level]?"open":""}`;
+    // render tasks
+    sectionTasks.forEach((task, index) => {
+      const taskEl = document.createElement("div");
+      taskEl.className = "task";
 
-section.innerHTML=`
-<div class="section-header" onclick="toggleSection('${level}')">
-<span>${level.toUpperCase()}</span>
-<span>${done}/${list.length}</span>
-</div>
-<div class="section-content"><ul></ul></div>`;
+      // checkbox
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.checked = task.completed;
+      checkbox.addEventListener("change", () => toggleTaskComplete(index));
+      taskEl.appendChild(checkbox);
 
-sections.appendChild(section);
+      // title
+      const title = document.createElement("span");
+      title.textContent = task.title + " - " + task.date;
+      if (task.completed) title.style.textDecoration = "line-through";
+      taskEl.appendChild(title);
 
-let ul=section.querySelector("ul");
+      // edit button
+      const editBtn = document.createElement("button");
+      editBtn.textContent = "Edit";
+      editBtn.addEventListener("click", () => editTask(index));
+      taskEl.appendChild(editBtn);
 
-list.forEach(t=>{
-let li=document.createElement("li");
-if(t.done) li.classList.add("done");
+      sectionContainer.appendChild(taskEl);
+    });
 
-li.innerHTML=`
-<div class="task-top">
-<input type="checkbox" ${t.done?"checked":""} onclick="toggle(${t.index})">
-<textarea onchange="edit(${t.index},this.value)">${t.text}</textarea>
-<button class="delete-btn" onclick="del(${t.index})">❌</button>
-</div>
-
-<div class="task-bottom">
-<input type="date" value="${t.deadline||''}" onchange="updateDate(${t.index},this.value)">
-<select onchange="updatePriority(${t.index},this.value)">
-<option value="high">🔴</option>
-<option value="medium">🟡</option>
-<option value="low">🟢</option>
-</select>
-</div>
-
-<div class="date-text">
-${t.deadline?"📅 "+t.deadline:""}
-${t.completedAt?" | ✅ "+t.completedAt.split("T")[0]:""}
-<br>
-${t.createdAt?lang[currentLang].created+": "+t.createdAt.split("T")[0]:""}
-</div>`;
-
-ul.appendChild(li);
-});
-});
-
-document.querySelector(".chart-section").classList.toggle("open",openSections.chart);
-
-updateChart();
-generateMonthly();
-applyLang();
+    // 🔥 update progress bar
+    updateProgress(priority);
+  });
 }
 
 /* ACTIONS */
