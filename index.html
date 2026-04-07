@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <link rel="icon" type="image/png" href="icon.png">
-  <link rel="apple-touch-icon" href="icon.png">
-  <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0f0f0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="apple-touch-icon" href="icon.png">
+<meta name="apple-mobile-web-app-title" content="ToDo">
+<link rel="manifest" href="manifest.json">
 <meta charset="UTF-8">
 <link href="https://fonts.googleapis.com/css2?family=Fredoka&family=Montserrat&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -87,6 +83,7 @@ body.light .section{background:#e0e0e0;}
 .section-header{
   display:flex;
   justify-content:space-between;
+  align-items:center;
   cursor:pointer;
   font-family:'Fredoka';
 }
@@ -175,7 +172,7 @@ textarea{flex:1;}
 }
 body.light .chart-section{background:#e0e0e0;}
 .chart-container{height:250px;}
-  #splash {
+#splash {
   position: fixed;
   top: 0;
   left: 0;
@@ -197,9 +194,10 @@ body.light .chart-section{background:#e0e0e0;}
 }
 
 .logo {
-  font-size: 64px;
-  font-family: 'Fredoka', cursive;
-  margin-bottom: 10px;
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 12px;
 }
 
 .loading {
@@ -210,10 +208,12 @@ body.light .chart-section{background:#e0e0e0;}
 </head>
 
 <body>
-  <div id="splash">
-  <div class="logo">F</div>
+
+<div id="splash">
+  <img src="icon.png" class="logo">
   <div class="loading">loading...</div>
 </div>
+
 <div class="container">
 
 <h1 id="title"></h1>
@@ -300,300 +300,394 @@ body.light .chart-section{background:#e0e0e0;}
 </div>
 
 <script>
-let tasks = [];
-let chart, pieChart;
-let openSections = {high:false, medium:false, low:false, chart:false};
-let currentLang = localStorage.getItem("lang") || "en";
+let tasks=[];
+let chart,pieChart;
+let openSections={high:false,medium:false,low:false,chart:false};
+let currentLang=localStorage.getItem("lang")||"en";
 
 /* LANGUAGE */
-const lang = {
-  en: {
-    title:"📋 My To-Do List",
-    tasks:"📝 Tasks",
-    reports:"📊 Reports",
-    settings:"⚙️ Settings",
-    add:"➕ Add Task",
-    enter:"Enter task",
-    filter:"📅 Filter Tasks",
-    chart:"📊 Weekly Progress",
-    monthly:"📊 Monthly Report",
-    theme:"Theme - 🌗",
-    lang:"Language - 🌏",
-    created:"Created on"
-  },
-  vi: {
-    title:"📋 Danh sách công việc",
-    tasks:"📝 Nhiệm vụ",
-    reports:"📊 Báo cáo",
-    settings:"⚙️ Cài đặt",
-    add:"➕ Thêm nhiệm vụ",
-    enter:"Nhập nhiệm vụ",
-    filter:"📅 Lọc nhiệm vụ",
-    chart:"📊 Tiến độ tuần",
-    monthly:"📊 Báo cáo tháng",
-    theme:"Giao diện - 🌗",
-    lang:"Ngôn ngữ - 🌏",
-    created:"Tạo lúc"
-  }
+const lang={
+en:{
+title:"📋 My To-Do List",
+tasks:"📝 Tasks",
+reports:"📊 Reports",
+settings:"⚙️ Settings",
+add:"➕ Add Task",
+enter:"Enter task",
+filter:"📅 Filter Tasks",
+chart:"📊 Weekly Progress",
+monthly:"📊 Monthly Report",
+theme:"Theme - 🌗",
+lang:"Language - 🌏",
+created:"Created on"
+},
+vi:{
+title:"📋 Danh sách công việc",
+tasks:"📝 Nhiệm vụ",
+reports:"📊 Báo cáo",
+settings:"⚙️ Cài đặt",
+add:"➕ Thêm nhiệm vụ",
+enter:"Nhập nhiệm vụ",
+filter:"📅 Lọc nhiệm vụ",
+chart:"📊 Tiến độ tuần",
+monthly:"📊 Báo cáo tháng",
+theme:"Giao diện - 🌗",
+lang:"Ngôn ngữ - 🌏",
+created:"Tạo lúc"
+}
 };
 
-function applyLang() {
-  let t = lang[currentLang];
-  document.getElementById("title").textContent = t.title;
-  document.getElementById("navTasks").textContent = t.tasks;
-  document.getElementById("navReports").textContent = t.reports;
-  document.getElementById("navSettings").textContent = t.settings;
-  document.getElementById("addTaskBtn").textContent = t.add;
-  document.getElementById("taskInput").placeholder = t.enter;
-  document.getElementById("filterTitle").textContent = t.filter;
-  document.getElementById("chartTitle").textContent = t.chart;
-  document.getElementById("monthlyTitle").textContent = t.monthly;
-  document.getElementById("themeLabel").textContent = t.theme;
-  document.getElementById("langLabel").textContent = t.lang;
+function applyLang(){
+let t=lang[currentLang];
+document.getElementById("title").textContent=t.title;
+document.getElementById("navTasks").textContent=t.tasks;
+document.getElementById("navReports").textContent=t.reports;
+document.getElementById("navSettings").textContent=t.settings;
+document.getElementById("addTaskBtn").textContent=t.add;
+document.getElementById("taskInput").placeholder=t.enter;
+document.getElementById("filterTitle").textContent=t.filter;
+document.getElementById("chartTitle").textContent=t.chart;
+document.getElementById("monthlyTitle").textContent=t.monthly;
+document.getElementById("themeLabel").textContent=t.theme;
+document.getElementById("langLabel").textContent=t.lang;
 
-  document.getElementById("priorityInput").innerHTML = `
-    <option value="high">🔴</option>
-    <option value="medium">🟡</option>
-    <option value="low">🟢</option>
-  `;
+document.getElementById("priorityInput").innerHTML=`
+<option value="high">🔴</option>
+<option value="medium">🟡</option>
+<option value="low">🟢</option>`;
 }
 
 /* NAV */
-document.getElementById("navTasks").onclick = () => switchPage("tasksPage");
-document.getElementById("navReports").onclick = () => switchPage("reportsPage");
-document.getElementById("navSettings").onclick = () => switchPage("settingsPage");
+document.getElementById("navTasks").onclick=()=>switchPage("tasksPage");
+document.getElementById("navReports").onclick=()=>switchPage("reportsPage");
+document.getElementById("navSettings").onclick=()=>switchPage("settingsPage");
 
-function switchPage(id) {
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
+function switchPage(id){
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+document.getElementById(id).classList.add("active");
 }
 
 /* CHART */
-function initCharts() {
-  chart = new Chart(document.getElementById("chart"), {
-    type: "bar",
-    data: {
-      labels:["Completed","Missed","Late"],
-      datasets:[{
-        label:"Tasks",
-        data:[0,0,0],
-        backgroundColor:["limegreen","red","gold"]
-      }]
+function initCharts(){
+chart=new Chart(document.getElementById("chart"),{
+  type:"bar",
+  data:{
+    labels:["Completed","Missed","Late"],
+    datasets:[{
+      label:"Tasks",
+      data:[0,0,0],
+      backgroundColor:["limegreen","red","gold"]
+    }]
+  },
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    animation:{
+      duration:600,
+      easing:"easeOutQuart"
     },
-    options:{
-      responsive:true,
-      maintainAspectRatio:false,
-      animation:{duration:600, easing:"easeOutQuart"},
-      plugins:{
-        legend:{display:false},
-        tooltip:{callbacks:{label:(ctx)=> `${ctx.label}: ${ctx.raw}`}}
+    plugins:{
+      legend:{
+        display:false   // removes weird undefined legend
       },
-      scales:{y:{beginAtZero:true, ticks:{precision:0}}}
+      tooltip:{
+        callbacks:{
+          label:(ctx)=> `${ctx.label}: ${ctx.raw}`
+        }
+      }
+    },
+    scales:{
+      y:{
+        beginAtZero:true,
+        ticks:{precision:0}
+      }
     }
-  });
-
-  pieChart = new Chart(document.getElementById("pieChart"), {
-    type: "pie",
-    data: { labels: ["Completed","Missed","Late"], datasets: [{ data:[0,0,0], backgroundColor:["limegreen","red","gold"] }] },
-    options: { responsive:true, plugins:{legend:{position:'bottom'}} }
-  });
+  }
+});
 }
 
-function updateChart() {
+function updateChart(){
   let completed=0, missed=0, late=0;
-  let now = new Date();
+  let now=new Date();
 
-  tasks.forEach(t => {
+  tasks.forEach(t=>{
     let hasDeadline = t.deadline;
     let d = hasDeadline ? new Date(t.deadline) : null;
 
     if(t.done){
-      if(hasDeadline && new Date(t.completedAt) > d){ late++; }
-      else { completed++; }
-    } else if(hasDeadline && d < now){ missed++; }
+      if(hasDeadline && new Date(t.completedAt) > d){
+        late++;
+      } else {
+        completed++;
+      }
+    } else if(hasDeadline && d < now){
+      missed++;
+    }
   });
 
-  chart.data.datasets[0].data = [completed, missed, late];
+  chart.data.datasets[0].data=[completed, missed, late];
+
   chart.options.scales.y.max = tasks.length + 1;
+
   chart.update();
 }
 
 /* MONTHLY */
-function generateMonthly() {
-  let months = {};
-  tasks.forEach(t => {
-    if(!t.deadline) return;
-    let m = t.deadline.slice(0,7);
-    if(!months[m]) months[m]=[];
-    months[m].push(t);
-  });
+function generateMonthly(){
+let months={};
 
-  let select = document.getElementById("monthSelect");
-  select.innerHTML = "";
+tasks.forEach(t=>{
+if(!t.deadline)return;
+let m=t.deadline.slice(0,7);
+if(!months[m])months[m]=[];
+months[m].push(t);
+});
 
-  Object.keys(months).forEach(m => {
-    let opt = document.createElement("option");
-    opt.value = m;
-    opt.textContent = m;
-    select.appendChild(opt);
-  });
+let select=document.getElementById("monthSelect");
+select.innerHTML="";
 
-  select.onchange = () => {
-    let data=[0,0,0];
-    months[select.value].forEach(t=>{
-      let d = new Date(t.deadline);
-      if(t.done){ if(new Date(t.completedAt)>d) data[2]++; else data[0]++; }
-      else if(d<new Date()) data[1]++;
-    });
-    pieChart.data.datasets[0].data = data;
-    pieChart.update();
-  };
+Object.keys(months).forEach(m=>{
+let opt=document.createElement("option");
+opt.value=m;
+opt.textContent=m;
+select.appendChild(opt);
+});
+
+select.onchange=()=>{
+let data=[0,0,0];
+months[select.value].forEach(t=>{
+let d=new Date(t.deadline);
+if(t.done){
+if(new Date(t.completedAt)>d)data[2]++;
+else data[0]++;
+}else if(d<new Date())data[1]++;
+});
+pieChart.data.datasets[0].data=data;
+pieChart.update();
+};
 }
 
 /* FILTER */
-function getFilteredTasks() {
-  let from = fromDate.value, to = toDate.value;
-  return tasks.filter(t=>{
-    if(!t.deadline) return true;
-    if(from && t.deadline < from) return false;
-    if(to && t.deadline > to) return false;
-    return true;
-  });
+function getFilteredTasks(){
+let from=fromDate.value,to=toDate.value;
+return tasks.filter(t=>{
+if(!t.deadline)return true;
+if(from&&t.deadline<from)return false;
+if(to&&t.deadline>to)return false;
+return true;
+});
 }
 
 /* RENDER */
-function render() {
-  let sections = document.getElementById("sections");
-  sections.innerHTML = "";
+function render(){
+let sections=document.getElementById("sections");
+sections.innerHTML="";
 
-  let filtered = getFilteredTasks();
-  let groups = {high:[], medium:[], low:[]};
-  filtered.forEach(t => groups[t.priority].push({...t,index:tasks.indexOf(t)}));
+let filtered=getFilteredTasks();
+let groups={high:[],medium:[],low:[]};
 
-  Object.keys(groups).forEach(level=>{
-    let list = groups[level];
-    let done = list.filter(t=>t.done).length;
+filtered.forEach(t=>groups[t.priority].push({...t,index:tasks.indexOf(t)}));
 
-    let section = document.createElement("div");
-    section.className = `section ${level} ${openSections[level]?"open":""}`;
-    section.innerHTML = `
-      <div class="section-header" onclick="toggleSection('${level}')">
-        <span>${level.toUpperCase()}</span>
-        <span>${done}/${list.length}</span>
-      </div>
-      <div class="section-content"><ul></ul></div>
-    `;
-    sections.appendChild(section);
+Object.keys(groups).forEach(level=>{
+let list=groups[level];
+// 🔥 AUTO SORT
+list.sort((a, b) => {
+  // 1. incomplete first
+  if (a.done !== b.done) return a.done - b.done;
 
-    let ul = section.querySelector("ul");
-    list.forEach(t=>{
-      let li = document.createElement("li");
-      if(t.done) li.classList.add("done");
-      li.innerHTML = `
-        <div class="task-top">
-          <input type="checkbox" ${t.done?"checked":""} onclick="toggle(${t.index})">
-          <textarea onchange="edit(${t.index},this.value)">${t.text}</textarea>
-          <button class="delete-btn" onclick="del(${t.index})">❌</button>
-        </div>
-        <div class="task-bottom">
-          <input type="date" value="${t.deadline||''}" onchange="updateDate(${t.index},this.value)">
-          <select onchange="updatePriority(${t.index},this.value)">
-            <option value="high">🔴</option>
-            <option value="medium">🟡</option>
-            <option value="low">🟢</option>
-          </select>
-        </div>
-        <div class="date-text">
-          ${t.deadline?"📅 "+t.deadline:""}
-          ${t.completedAt?" | ✅ "+t.completedAt.split("T")[0]:""}
-          <br>
-          ${t.createdAt?lang[currentLang].created+": "+t.createdAt.split("T")[0]:""}
-        </div>
-      `;
-      ul.appendChild(li);
-    });
-  });
+  // 2. tasks WITH deadlines come first
+  if (!a.deadline && b.deadline) return 1;
+  if (a.deadline && !b.deadline) return -1;
 
-  document.querySelector(".chart-section").classList.toggle("open", openSections.chart);
+  // 3. sort by deadline
+  if (a.deadline && b.deadline) {
+    return new Date(a.deadline) - new Date(b.deadline);
+  }
 
-  updateChart();
-  generateMonthly();
-  applyLang();
+  return 0;
+});
+let done=list.filter(t=>t.done).length;
+
+let section=document.createElement("div");
+section.className=`section ${level} ${openSections[level]?"open":""}`;
+
+let percent = list.length ? (done / list.length) * 100 : 0;
+
+section.innerHTML=`
+<div class="section-header" onclick="toggleSection('${level}')">
+<span>${level.toUpperCase()}</span>
+
+<div style="
+  flex:1;
+  margin:0 10px;
+  background:#333;
+  border-radius:10px;
+  height:8px;
+  overflow:hidden;
+">
+  <div style="
+    width:${percent}%;
+    height:100%;
+    background:limegreen;
+    transition:0.3s;
+  "></div>
+</div>
+
+<span>${done}/${list.length}</span>
+</div>
+
+<div class="section-content"><ul></ul></div>`;
+
+sections.appendChild(section);
+
+let ul=section.querySelector("ul");
+
+list.forEach(t=>{
+let li=document.createElement("li");
+if(t.done) li.classList.add("done");
+
+li.innerHTML=`
+<div class="task-top">
+<input type="checkbox" ${t.done?"checked":""} onclick="toggle(${t.index})">
+<textarea onchange="edit(${t.index},this.value)">${t.text}</textarea>
+<button class="delete-btn" onclick="del(${t.index})">❌</button>
+</div>
+
+<div class="task-bottom">
+<input type="date" value="${t.deadline||''}" onchange="updateDate(${t.index},this.value)">
+<select onchange="updatePriority(${t.index},this.value)">
+<option value="high">🔴</option>
+<option value="medium">🟡</option>
+<option value="low">🟢</option>
+</select>
+</div>
+
+<div class="date-text">
+${t.deadline?"📅 "+t.deadline:""}
+${t.completedAt?" | ✅ "+t.completedAt.split("T")[0]:""}
+<br>
+${t.createdAt?lang[currentLang].created+": "+t.createdAt.split("T")[0]:""}
+</div>`;
+
+ul.appendChild(li);
+});
+});
+
+document.querySelector(".chart-section").classList.toggle("open",openSections.chart);
+
+updateChart();
+generateMonthly();
+applyLang();
 }
 
 /* ACTIONS */
 function toggle(i){
   tasks[i].done = !tasks[i].done;
-  tasks[i].completedAt = tasks[i].done ? new Date().toISOString() : null;
+
+  tasks[i].completedAt = tasks[i].done
+    ? new Date().toISOString()
+    : null;
+
   save();
+
   render();
-  setTimeout(()=>{ updateChart(); },0);
+
+  // ✅ GUARANTEED chart update AFTER DOM updates
+  requestAnimationFrame(() => {
+    updateChart();
+  });
 }
-function del(i){ tasks.splice(i,1); save(); render(); }
-function edit(i,v){ tasks[i].text=v; save(); }
-function updateDate(i,v){ tasks[i].deadline=v; save(); render(); }
-function updatePriority(i,v){ tasks[i].priority=v; save(); render(); }
+function del(i){tasks.splice(i,1);save();render();}
+function edit(i,v){tasks[i].text=v;save();}
+function updateDate(i,v){tasks[i].deadline=v;save();render();}
+function updatePriority(i,v){tasks[i].priority=v;save();render();}
 
 /* ADD */
-document.getElementById("addTaskBtn").onclick = () => {
-  let t = document.getElementById("taskInput");
-  let d = document.getElementById("deadlineInput");
-  let p = document.getElementById("priorityInput");
+document.getElementById("addTaskBtn").onclick=()=>{
+let t=document.getElementById("taskInput");
+let d=document.getElementById("deadlineInput");
+let p=document.getElementById("priorityInput");
 
-  if(!t.value.trim()) return;
+if(!t.value.trim())return;
 
-  tasks.push({
-    text: t.value,
-    deadline: d.value,
-    priority: p.value,
-    done: false,
-    completedAt: null,
-    createdAt: new Date().toISOString()
-  });
+tasks.push({
+text:t.value,
+deadline:d.value,
+priority:p.value,
+done:false,
+completedAt:null,
+createdAt:new Date().toISOString()
+});
 
-  t.value = ""; d.value = "";
-  save();
-  render();
-  updateChart();
+t.value="";d.value="";
+save();
+render();
+updateChart();
 };
 
 /* TOGGLE */
-function toggleSection(level){ openSections[level]=!openSections[level]; render(); }
-function toggleChart(){ openSections.chart=!openSections.chart; render(); }
+function toggleSection(level){
+openSections[level]=!openSections[level];
+render();
+}
+function toggleChart(){
+openSections.chart=!openSections.chart;
+render();
+}
 
 /* THEME */
-document.getElementById("themeSelect").onchange = e => {
-  document.body.classList.toggle("light", e.target.value==="light");
+document.getElementById("themeSelect").onchange=e=>{
+document.body.classList.toggle("light",e.target.value==="light");
 };
 
 /* LANGUAGE */
-document.getElementById("langSelect").onchange = e => {
-  currentLang = e.target.value;
-  localStorage.setItem("lang", currentLang);
-  applyLang();
-  render();
+document.getElementById("langSelect").onchange=e=>{
+currentLang=e.target.value;
+localStorage.setItem("lang",currentLang);
+applyLang();
+render();
 };
 
 /* STORAGE */
-function save(){ localStorage.setItem("tasks", JSON.stringify(tasks)); }
-function load(){ tasks = JSON.parse(localStorage.getItem("tasks"))||[]; }
+function save(){
+  localStorage.setItem("tasks_v2", JSON.stringify(tasks));
+}
 
-/* INIT EVERYTHING AFTER LOAD */
+function load(){
+  let data = localStorage.getItem("tasks_v2");
+
+  if(!data){
+    data = localStorage.getItem("tasks");
+  }
+
+  tasks = JSON.parse(data) || [];
+
+  // 🔥 FIX OLD TASKS (migration)
+  tasks = tasks.map(t => ({
+    text: t.text || "",
+    deadline: t.deadline || "",
+    priority: t.priority || "low",
+    done: t.done || false,
+    completedAt: t.completedAt || null,
+    createdAt: t.createdAt || new Date().toISOString()
+  }));
+}
+
 window.addEventListener("load", () => {
   load();
   initCharts();
   applyLang();
   render();
 
-  // remove splash as soon as everything is ready
   const splash = document.getElementById("splash");
+
   splash.classList.add("fade");
 
-  // fully hide it after transition ends
   splash.addEventListener("transitionend", () => {
     splash.style.display = "none";
   });
 });
+</script>
 
 </body>
 </html>
