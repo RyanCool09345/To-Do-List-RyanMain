@@ -673,20 +673,24 @@ function load(){
   }));
 }
 
-window.addEventListener("load", () => {
-  load();
-  initCharts();
-  applyLang();
-  render();
+load();
+initCharts();
+applyLang();
+render();
 
+// splash
+setTimeout(() => {
   const splash = document.getElementById("splash");
+
+  if (!splash) return;
 
   splash.classList.add("fade");
 
-  splash.addEventListener("transitionend", () => {
+  setTimeout(() => {
     splash.style.display = "none";
-  });
-});
+  }, 500);
+
+}, 1200);
 </script>
 
 </body>
