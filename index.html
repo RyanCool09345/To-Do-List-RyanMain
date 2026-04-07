@@ -407,6 +407,7 @@ chart=new Chart(document.getElementById("chart"),{
 }
 
 function updateChart(){
+  if (!chart) return;
   let completed=0, missed=0, late=0;
   let now=new Date();
 
@@ -674,7 +675,11 @@ function load(){
 }
 
 load();
-initCharts();
+try {
+  initCharts();
+} catch (e) {
+  console.log("chart failed");
+}
 applyLang();
 render();
 
