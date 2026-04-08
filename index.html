@@ -16,6 +16,9 @@ body{
   color:white;
   margin:0;
   transition:0.3s;
+
+  /* 🔥 TEXT SIZE SYSTEM */
+  --text-size:16px;
 }
 body.light{background:#f9f9f9;color:#000;}
 
@@ -50,7 +53,10 @@ h1{text-align:center;font-family:'Fredoka';}
 /* INPUT */
 .input-group{display:flex;flex-direction:column;gap:10px;}
 input,select,textarea,button{
-  padding:14px;border-radius:12px;border:none;
+  padding:14px;
+  border-radius:12px;
+  border:none;
+  font-size:calc(var(--text-size) - 1px);
 }
 #addTaskBtn{background:#4CAF50;color:white;}
 
@@ -86,6 +92,7 @@ body.light .section{background:#e0e0e0;}
   align-items:center;
   cursor:pointer;
   font-family:'Fredoka';
+  font-size:calc(var(--text-size) + 2px);
 }
 
 /* DROPDOWN FIX */
@@ -125,7 +132,10 @@ li.done textarea{
 }
 
 .task-top{display:flex;gap:10px;align-items:center;}
-textarea{flex:1;}
+textarea{
+  flex:1;
+  font-size:var(--text-size);
+}
 
 .task-bottom{display:flex;gap:8px;margin-top:6px;}
 .task-bottom input,.task-bottom select{flex:1;}
@@ -138,7 +148,7 @@ textarea{flex:1;}
 }
 
 .date-text{
-  font-size:12px;
+  font-size:calc(var(--text-size) - 3px);
   margin-top:5px;
   opacity:0.8;
   text-decoration:none !important;
@@ -289,6 +299,15 @@ body.light .chart-section{background:#e0e0e0;}
 </div>
 
 <div class="setting-group">
+<label>Text Size - 🔤</label>
+<select id="textSizeSelect">
+<option value="low">Small</option>
+<option value="medium">Medium</option>
+<option value="high">Large</option>
+</select>
+</div>
+
+<div class="setting-group">
 <label id="langLabel"></label>
 <select id="langSelect">
 <option value="en">🇺🇸 English</option>
@@ -304,6 +323,7 @@ let tasks=[];
 let chart,pieChart;
 let openSections={high:false,medium:false,low:false,chart:false};
 let currentLang=localStorage.getItem("lang")||"en";
+let textSize = localStorage.getItem("textSize") || "medium";
 
 /* LANGUAGE */
 const lang={
@@ -338,6 +358,15 @@ created:"Tạo lúc"
 };
 
 function applyLang(){
+  function applyTextSize(){
+  let sizeMap = {
+    low: "14px",
+    medium: "16px",
+    high: "18px"
+  };
+
+  document.body.style.setProperty("--text-size", sizeMap[textSize]);
+}
 let t=lang[currentLang];
 document.getElementById("title").textContent=t.title;
 document.getElementById("navTasks").textContent=t.tasks;
@@ -557,9 +586,9 @@ li.innerHTML=`
 <div class="task-bottom">
 <input type="date" value="${t.deadline||''}" onchange="updateDate(${t.index},this.value)">
 <select onchange="updatePriority(${t.index},this.value)">
-<option value="high">🔴</option>
-<option value="medium">🟡</option>
-<option value="low">🟢</option>
+<option value="high" ${t.priority === "high" ? "selected" : ""}>🔴</option>
+<option value="medium" ${t.priority === "medium" ? "selected" : ""}>🟡</option>
+<option value="low" ${t.priority === "low" ? "selected" : ""}>🟢</option>
 </select>
 </div>
 
@@ -648,7 +677,12 @@ localStorage.setItem("lang",currentLang);
 applyLang();
 render();
 };
-
+  
+document.getElementById("textSizeSelect").onchange = e => {
+  textSize = e.target.value;
+  localStorage.setItem("textSize", textSize);
+  applyTextSize();
+};
 /* STORAGE */
 function save(){
   localStorage.setItem("tasks_v2", JSON.stringify(tasks));
@@ -681,7 +715,9 @@ try {
   console.log("chart failed");
 }
 applyLang();
+applyTextSize();
 render();
+document.getElementById("textSizeSelect").value = textSize;
 
 // splash
 setTimeout(() => {
