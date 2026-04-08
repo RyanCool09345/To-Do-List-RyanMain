@@ -182,47 +182,11 @@ textarea{
 }
 body.light .chart-section{background:#e0e0e0;}
 .chart-container{height:250px;}
-#splash {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #0f172a;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  transition: opacity 0.5s ease;
-}
 
-#splash.fade {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.logo {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  margin-bottom: 12px;
-}
-
-.loading {
-  font-size: 14px;
-  opacity: 0.7;
-}
 </style>
 </head>
 
 <body>
-
-<div id="splash">
-  <img src="icon.png" class="logo">
-  <div class="loading">loading...</div>
-</div>
 
 <div class="container">
 
@@ -726,14 +690,6 @@ render();
 document.getElementById("textSizeSelect").value = textSize;
 
 console.log("app reached splash removal");
-
-setTimeout(() => {
-  const splash = document.getElementById("splash");
-
-  if (splash) {
-    splash.style.display = "none";
-  }
-}, 1500);
 
 </body>
 </html>
