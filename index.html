@@ -358,6 +358,24 @@ created:"Tạo lúc"
 };
 
 function applyLang(){
+  let t=lang[currentLang];
+  document.getElementById("title").textContent=t.title;
+  document.getElementById("navTasks").textContent=t.tasks;
+  document.getElementById("navReports").textContent=t.reports;
+  document.getElementById("navSettings").textContent=t.settings;
+  document.getElementById("addTaskBtn").textContent=t.add;
+  document.getElementById("taskInput").placeholder=t.enter;
+  document.getElementById("filterTitle").textContent=t.filter;
+  document.getElementById("chartTitle").textContent=t.chart;
+  document.getElementById("monthlyTitle").textContent=t.monthly;
+  document.getElementById("themeLabel").textContent=t.theme;
+  document.getElementById("langLabel").textContent=t.lang;
+
+  document.getElementById("priorityInput").innerHTML=`
+  <option value="high">🔴</option>
+  <option value="medium">🟡</option>
+  <option value="low">🟢</option>`;
+}
   function applyTextSize(){
   let sizeMap = {
     low: "14px",
@@ -366,24 +384,6 @@ function applyLang(){
   };
 
   document.body.style.setProperty("--text-size", sizeMap[textSize]);
-}
-let t=lang[currentLang];
-document.getElementById("title").textContent=t.title;
-document.getElementById("navTasks").textContent=t.tasks;
-document.getElementById("navReports").textContent=t.reports;
-document.getElementById("navSettings").textContent=t.settings;
-document.getElementById("addTaskBtn").textContent=t.add;
-document.getElementById("taskInput").placeholder=t.enter;
-document.getElementById("filterTitle").textContent=t.filter;
-document.getElementById("chartTitle").textContent=t.chart;
-document.getElementById("monthlyTitle").textContent=t.monthly;
-document.getElementById("themeLabel").textContent=t.theme;
-document.getElementById("langLabel").textContent=t.lang;
-
-document.getElementById("priorityInput").innerHTML=`
-<option value="high">🔴</option>
-<option value="medium">🟡</option>
-<option value="low">🟢</option>`;
 }
 
 /* NAV */
