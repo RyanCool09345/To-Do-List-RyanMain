@@ -678,11 +678,15 @@ applyLang();
 render();
 };
   
-document.getElementById("textSizeSelect").onchange = e => {
-  textSize = e.target.value;
-  localStorage.setItem("textSize", textSize);
-  applyTextSize();
-};
+const textSizeEl = document.getElementById("textSizeSelect");
+
+if (textSizeEl) {
+  textSizeEl.onchange = e => {
+    textSize = e.target.value;
+    localStorage.setItem("textSize", textSize);
+    applyTextSize();
+  };
+}
 /* STORAGE */
 function save(){
   localStorage.setItem("tasks_v2", JSON.stringify(tasks));
@@ -714,25 +718,22 @@ try {
 } catch (e) {
   console.log("chart failed");
 }
+
 applyLang();
 applyTextSize();
 render();
+
 document.getElementById("textSizeSelect").value = textSize;
 
-// splash
+console.log("app reached splash removal");
+
 setTimeout(() => {
   const splash = document.getElementById("splash");
 
-  if (!splash) return;
-
-  splash.classList.add("fade");
-
-  setTimeout(() => {
+  if (splash) {
     splash.style.display = "none";
-  }, 500);
-
-}, 1200);
-</script>
+  }
+}, 1500);
 
 </body>
 </html>
