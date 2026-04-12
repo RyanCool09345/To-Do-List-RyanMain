@@ -319,9 +319,7 @@ body.light #textSizeSlider{
 <option value="high">Large</option>
 </select>
 
-<div id="advancedTextToggle" style="font-size:13px;margin-top:6px;cursor:pointer;">
-Advanced
-</div>
+<div id="advancedTextToggle" style="font-size:13px;margin-top:6px;cursor:pointer;"></div>
 
 <div id="advancedTextPanel" style="display:none;margin-top:10px;">
 <div style="display:flex;align-items:center;gap:8px;">
@@ -370,8 +368,8 @@ monthly:"📊 Monthly Report",
 theme:"Theme - 🌗",
 lang:"Language - 🌏",
 created:"Created on"
-  // 👇 ADD THIS LINE
-textSize:"Text Size - 🔤"
+textSize:"Text Size - 🔤",
+advanced:"Advanced"
 },
 vi:{
 title:"📋 Danh sách công việc",
@@ -385,26 +383,26 @@ chart:"📊 Tiến độ tuần",
 monthly:"📊 Báo cáo tháng",
 theme:"Giao diện - 🌗",
 lang:"Ngôn ngữ - 🌏",
-created:"Tạo lúc"
-  textSize:"Kích thước chữ - 🔤"
+created:"Tạo lúc" 
+  textSize:"Kích thước chữ - 🔤",
+  advanced:"Nâng cao"
 }
 };
-  function t(key){
-  return lang[currentLang][key] || lang["en"][key] || key;
-}
 
 function applyLang(){
-  document.getElementById("title").textContent = t("title");
-  document.getElementById("navTasks").textContent = t("tasks");
-  document.getElementById("navReports").textContent = t("reports");
-  document.getElementById("navSettings").textContent = t("settings");
-  document.getElementById("addTaskBtn").textContent = t("add");
-  document.getElementById("taskInput").placeholder = t("enter");
-  document.getElementById("filterTitle").textContent = t("filter");
-  document.getElementById("chartTitle").textContent = t("chart");
-  document.getElementById("monthlyTitle").textContent = t("monthly");
-  document.getElementById("themeLabel").textContent = t("theme");
-  document.getElementById("langLabel").textContent = t("lang");
+  let t=lang[currentLang];
+  document.getElementById("title").textContent=t.title;
+  document.getElementById("navTasks").textContent=t.tasks;
+  document.getElementById("navReports").textContent=t.reports;
+  document.getElementById("navSettings").textContent=t.settings;
+  document.getElementById("addTaskBtn").textContent=t.add;
+  document.getElementById("taskInput").placeholder=t.enter;
+  document.getElementById("filterTitle").textContent=t.filter;
+  document.getElementById("chartTitle").textContent=t.chart;
+  document.getElementById("monthlyTitle").textContent=t.monthly;
+  document.getElementById("themeLabel").textContent=t.theme;
+  document.getElementById("langLabel").textContent=t.lang;
+  document.getElementById("advancedTextToggle").textContent = t("advanced");
   document.getElementById("textSizeLabel").textContent = t("textSize");
 
   document.getElementById("priorityInput").innerHTML=`
@@ -632,7 +630,7 @@ li.innerHTML=`
 ${t.deadline?"📅 "+t.deadline:""}
 ${t.completedAt?" | ✅ "+t.completedAt.split("T")[0]:""}
 <br>
-${t.createdAt ? t("created") + ": " + t.createdAt.split("T")[0] : ""}
+${t.createdAt?lang[currentLang].created+": "+t.createdAt.split("T")[0]:""}
 </div>`;
 
 ul.appendChild(li);
@@ -755,16 +753,16 @@ try {
   console.log("chart failed");
 }
 
-render();
 applyLang();
 applyTextSize();
+render();
 
 document.getElementById("textSizeSelect").value = textSize;
 
 console.log("app reached splash removal");
 // 🔥 ADVANCED TEXT SIZE
-const advToggle = document.querySelector("#textSizeSelect + #advancedTextToggle");
-const advPanel = document.querySelector("#textSizeSelect + #advancedTextToggle + #advancedTextPanel");
+const advToggle = document.getElementById("advancedTextToggle");
+const advPanel = document.getElementById("advancedTextPanel");
 const slider = document.getElementById("textSizeSlider");
 const valueText = document.getElementById("textSizeValue");
 
