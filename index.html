@@ -182,7 +182,10 @@ textarea{
 }
 body.light .chart-section{background:#e0e0e0;}
 .chart-container{height:250px;}
-
+#advancedTextToggle:hover{
+  opacity:1;
+  text-decoration:underline;
+}
 </style>
 </head>
 
@@ -260,6 +263,21 @@ body.light .chart-section{background:#e0e0e0;}
 <option value="dark">🌙 Dark</option>
 <option value="light">☀️ Light</option>
 </select>
+  <div id="advancedTextToggle" style="color:white;font-size:13px;margin-top:6px;cursor:pointer;opacity:0.85;">
+Advanced
+</div>
+
+<div id="advancedTextPanel" style="display:none;margin-top:10px;">
+<div style="display:flex;align-items:center;gap:8px;">
+<span style="font-size:12px;">A</span>
+<input type="range" id="textSizeSlider" min="12" max="24" value="16">
+<span style="font-size:18px;">A</span>
+</div>
+
+<div id="textSizeValue" style="font-size:12px;margin-top:4px;opacity:0.8;">
+16px
+</div>
+</div>
 </div>
 
 <div class="setting-group">
@@ -690,7 +708,34 @@ render();
 document.getElementById("textSizeSelect").value = textSize;
 
 console.log("app reached splash removal");
+// 🔥 ADVANCED TEXT SIZE
+const advToggle = document.getElementById("advancedTextToggle");
+const advPanel = document.getElementById("advancedTextPanel");
+const slider = document.getElementById("textSizeSlider");
+const valueText = document.getElementById("textSizeValue");
 
+// toggle panel
+advToggle.onclick = () => {
+  advPanel.style.display = advPanel.style.display === "none" ? "block" : "none";
+};
+
+// load saved px size
+const savedPx = localStorage.getItem("textSizePx");
+if(savedPx){
+  document.body.style.setProperty("--text-size", savedPx + "px");
+  slider.value = savedPx;
+  valueText.textContent = savedPx + "px";
+}
+
+// live update
+slider.oninput = () => {
+  let size = slider.value;
+
+  document.body.style.setProperty("--text-size", size + "px");
+  valueText.textContent = size + "px";
+
+  localStorage.setItem("textSizePx", size);
+};
 </script>
 </body>
 </html>
