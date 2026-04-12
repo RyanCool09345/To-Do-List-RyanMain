@@ -282,11 +282,29 @@ Advanced
 
 <div class="setting-group">
 <label>Text Size - 🔤</label>
+
 <select id="textSizeSelect">
 <option value="low">Small</option>
 <option value="medium">Medium</option>
 <option value="high">Large</option>
 </select>
+
+<div id="advancedTextToggle" style="color:white;font-size:13px;margin-top:6px;cursor:pointer;opacity:0.85;">
+Advanced
+</div>
+
+<div id="advancedTextPanel" style="display:none;margin-top:10px;">
+<div style="display:flex;align-items:center;gap:8px;">
+<span style="font-size:12px;">A</span>
+<input type="range" id="textSizeSlider" min="12" max="24" value="16">
+<span style="font-size:18px;">A</span>
+</div>
+
+<div id="textSizeValue" style="font-size:12px;margin-top:4px;opacity:0.8;">
+16px
+</div>
+</div>
+
 </div>
 
 <div class="setting-group">
