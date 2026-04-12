@@ -205,7 +205,17 @@ body.light #advancedTextToggle{
 }
 
 body.light #advancedTextPanel{
-  background:#e0e0e0;
+  background:#ffffff;
+  border:1px solid #ccc;
+}
+  /* 🔥 SLIDER FIX */
+#textSizeSlider{
+  width:100%;
+  accent-color:#4FC3F7; /* blue like your buttons */
+}
+
+body.light #textSizeSlider{
+  accent-color:#4FC3F7;
 }
 </style>
 </head>
@@ -295,7 +305,7 @@ body.light #advancedTextPanel{
 <option value="high">Large</option>
 </select>
 
-<div id="advancedTextToggle" style="font-size:13px;margin-top:6px;cursor:pointer;opacity:0.85;">
+<div id="advancedTextToggle" style="font-size:13px;margin-top:6px;cursor:pointer;">
 Advanced
 </div>
 
@@ -306,7 +316,7 @@ Advanced
 <span style="font-size:18px;">A</span>
 </div>
 
-<div id="textSizeValue" style="font-size:12px;margin-top:4px;opacity:0.8;">
+<div id="textSizeValue" style="font-size:12px;margin-top:4px;">
 16px
 </div>
 </div>
