@@ -367,7 +367,7 @@ chart:"📊 Weekly Progress",
 monthly:"📊 Monthly Report",
 theme:"Theme - 🌗",
 lang:"Language - 🌏",
-created:"Created on"
+created:"Created on",
 textSize:"Text Size - 🔤",
 advanced:"Advanced"
 },
@@ -383,9 +383,9 @@ chart:"📊 Tiến độ tuần",
 monthly:"📊 Báo cáo tháng",
 theme:"Giao diện - 🌗",
 lang:"Ngôn ngữ - 🌏",
-created:"Tạo lúc" 
-  textSize:"Kích thước chữ - 🔤",
-  advanced:"Nâng cao"
+created:"Tạo lúc",
+textSize:"Kích thước chữ - 🔤",
+advanced:"Nâng cao"
 }
 };
 
@@ -402,8 +402,8 @@ function applyLang(){
   document.getElementById("monthlyTitle").textContent=t.monthly;
   document.getElementById("themeLabel").textContent=t.theme;
   document.getElementById("langLabel").textContent=t.lang;
-  document.getElementById("advancedTextToggle").textContent = t("advanced");
-  document.getElementById("textSizeLabel").textContent = t("textSize");
+  document.getElementById("advancedTextToggle").textContent = t.advanced;
+  document.getElementById("textSizeLabel").textContent = t.textSize;
 
   document.getElementById("priorityInput").innerHTML=`
   <option value="high">🔴</option>
