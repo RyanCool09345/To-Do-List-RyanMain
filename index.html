@@ -73,14 +73,25 @@ body.light .filter-section{background:#e0e0e0;}
 .filter-row input{flex:1;}
 
 /* SECTIONS */
-.sections{display:flex;gap:15px;margin-top:10px;}
+.sections{
+  display:flex;
+  gap:15px;
+  margin-top:10px;
+  align-items:flex-start;
+}
 .section{
   flex:1;
   background:#1a1a1a;
   border-radius:16px;
   padding:10px;
+
+  max-height:500px;
+  overflow-y:auto;
 }
-body.light .section{background:#e0e0e0;}
+body.light .section{
+  background:#ffffff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
 
 .section.high{border-top:4px solid red;}
 .section.medium{border-top:4px solid gold;}
@@ -119,7 +130,10 @@ li{
   border-radius:12px;
   animation:fadeIn 0.2s ease;
 }
-body.light li{background:#fff;}
+body.light li{
+  background:#ffffff;
+  border:1px solid #ddd;
+}
 
 @keyframes fadeIn{
   from{opacity:0;transform:translateY(6px);}
