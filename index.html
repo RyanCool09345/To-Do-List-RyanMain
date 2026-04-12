@@ -311,7 +311,7 @@ body.light #textSizeSlider{
 </div>
 
 <div class="setting-group">
-<label>Text Size - 🔤</label>
+<label id="textSizeLabel"></label>
 
 <select id="textSizeSelect">
 <option value="low">Small</option>
@@ -370,6 +370,8 @@ monthly:"📊 Monthly Report",
 theme:"Theme - 🌗",
 lang:"Language - 🌏",
 created:"Created on"
+  // 👇 ADD THIS LINE
+textSize:"Text Size - 🔤"
 },
 vi:{
 title:"📋 Danh sách công việc",
@@ -384,6 +386,7 @@ monthly:"📊 Báo cáo tháng",
 theme:"Giao diện - 🌗",
 lang:"Ngôn ngữ - 🌏",
 created:"Tạo lúc"
+  textSize:"Kích thước chữ - 🔤"
 }
 };
   function t(key){
@@ -402,6 +405,7 @@ function applyLang(){
   document.getElementById("monthlyTitle").textContent = t("monthly");
   document.getElementById("themeLabel").textContent = t("theme");
   document.getElementById("langLabel").textContent = t("lang");
+  document.getElementById("textSizeLabel").textContent = t("textSize");
 
   document.getElementById("priorityInput").innerHTML=`
   <option value="high">🔴</option>
@@ -751,9 +755,9 @@ try {
   console.log("chart failed");
 }
 
+render();
 applyLang();
 applyTextSize();
-render();
 
 document.getElementById("textSizeSelect").value = textSize;
 
