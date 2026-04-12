@@ -85,7 +85,7 @@ body.light .filter-section{background:#e0e0e0;}
   border-radius:16px;
   padding:10px;
 
-  max-height:60vh;
+  max-height:none !important;
   overflow-y:auto;
 }
 body.light .section{
@@ -528,13 +528,17 @@ pieChart.update();
 
 /* FILTER */
 function getFilteredTasks(){
-let from=fromDate.value,to=toDate.value;
-return tasks.filter(t=>{
-if(!t.deadline)return true;
-if(from&&t.deadline<from)return false;
-if(to&&t.deadline>to)return false;
-return true;
-});
+  let from = document.getElementById("fromDate").value;
+  let to = document.getElementById("toDate").value;
+
+  return tasks.filter(t=>{
+    if(!t.deadline) return true;
+
+    if(from && t.deadline < from) return false;
+    if(to && t.deadline > to) return false;
+
+    return true;
+  });
 }
 
 /* RENDER */
@@ -548,6 +552,7 @@ let groups={high:[],medium:[],low:[]};
 filtered.forEach(t=>groups[t.priority].push({...t,index:tasks.indexOf(t)}));
 
 Object.keys(groups).forEach(level=>{
+  console.log(level, groups[level].length);
 let list=groups[level];
 // 🔥 AUTO SORT
 list.sort((a, b) => {
