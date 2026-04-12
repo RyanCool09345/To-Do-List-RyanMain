@@ -108,16 +108,11 @@ body.light .section{
 
 /* DROPDOWN FIX */
 .section-content{
-  opacity:0;
-  transform:translateY(-5px);
-  max-height:0;
-  overflow:hidden;
-  transition:all 0.3s ease;
+  display:none;
 }
+
 .section.open .section-content{
-  opacity:1;
-  transform:translateY(0);
-  max-height:none;
+  display:block;
 }
 
 /* TASK */
