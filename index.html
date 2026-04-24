@@ -263,10 +263,15 @@ body.light #textSizeSlider{
 
 <div class="filter-section">
 <div class="filter-title" id="filterTitle"></div>
+
 <div class="filter-row">
 <input type="date" id="fromDate">
 <input type="date" id="toDate">
 </div>
+
+<!-- 🔥 NEW FILTER RESULTS -->
+<div id="filterResults" style="margin-top:10px;"></div>
+
 </div>
 
 <div class="sections" id="sections"></div>
@@ -555,6 +560,31 @@ function getFilteredTasks(){
     return true;
   });
 }
+  function renderFilterPreview(){
+  let container = document.getElementById("filterResults");
+  container.innerHTML = "";
+
+  let filtered = tasks;
+
+  if(!filtered.length) return;
+
+  filtered.forEach(t=>{
+    let div = document.createElement("div");
+
+    div.style.background = "#2a2a2a";
+    div.style.padding = "8px";
+    div.style.borderRadius = "10px";
+    div.style.marginBottom = "6px";
+    div.style.fontSize = "13px";
+
+    div.innerHTML = `
+      ${t.text}
+      ${t.deadline ? `<br>📅 ${t.deadline}` : ""}
+    `;
+
+    container.appendChild(div);
+  });
+}
 
 /* RENDER */
 function render(){
@@ -657,6 +687,8 @@ document.querySelector(".chart-section").classList.toggle("open",openSections.ch
 updateChart();
 generateMonthly();
 applyLang();
+  
+renderFilterPreview();
 }
 
 /* ACTIONS */
