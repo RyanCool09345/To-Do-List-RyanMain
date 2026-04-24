@@ -560,9 +560,18 @@ function getFilteredTasks(){
     return true;
   });
 }
-  function renderFilterPreview(){
+function renderFilterPreview(){
   let container = document.getElementById("filterResults");
   container.innerHTML = "";
+
+  // 🔥 BUG 1 FIX (don’t show if no dates)
+  let from = document.getElementById("fromDate").value;
+  let to = document.getElementById("toDate").value;
+
+  if(!from && !to){
+    container.innerHTML = "";
+    return;
+  }
 
   let filtered = tasks;
 
@@ -571,15 +580,30 @@ function getFilteredTasks(){
   filtered.forEach(t=>{
     let div = document.createElement("div");
 
+    // 🔥 BUG 4 FIX (bigger UI)
     div.style.background = "#2a2a2a";
-    div.style.padding = "8px";
-    div.style.borderRadius = "10px";
-    div.style.marginBottom = "6px";
-    div.style.fontSize = "13px";
+    div.style.padding = "12px";
+    div.style.borderRadius = "12px";
+    div.style.marginBottom = "8px";
+    div.style.fontSize = "15px";
+    div.style.border = "1px solid rgba(255,255,255,0.08)";
 
+    // 🔥 BUG 2 FIX (done / not done)
     div.innerHTML = `
-      ${t.text}
-      ${t.deadline ? `<br>📅 ${t.deadline}` : ""}
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span>${t.text}</span>
+        <span style="
+          font-size:12px;
+          padding:3px 8px;
+          border-radius:8px;
+          background:${t.done ? "limegreen" : "#555"};
+          color:white;
+        ">
+          ${t.done ? "DONE" : "TODO"}
+        </span>
+      </div>
+
+      ${t.deadline ? `<div style="font-size:13px;margin-top:5px;">📅 ${t.deadline}</div>` : ""}
     `;
 
     container.appendChild(div);
@@ -591,7 +615,7 @@ function render(){
 let sections=document.getElementById("sections");
 sections.innerHTML="";
 
-let filtered=getFilteredTasks();
+let filtered=tasks; 
 let groups={high:[],medium:[],low:[]};
 
 filtered.forEach(t=>groups[t.priority].push({...t,index:tasks.indexOf(t)}));
