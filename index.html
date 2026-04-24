@@ -550,7 +550,7 @@ function getFilteredTasks(){
   let toDate = to ? new Date(to) : null;
 
   return tasks.filter(t=>{
-    if(!t.deadline) return true;
+    if(!t.deadline) return false;
 
     let taskDate = new Date(t.deadline);
 
@@ -573,7 +573,7 @@ function renderFilterPreview(){
     return;
   }
 
-  let filtered = tasks;
+  let filtered = getFilteredTasks();
 
   if(!filtered.length) return;
 
