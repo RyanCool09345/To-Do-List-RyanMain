@@ -541,11 +541,16 @@ function getFilteredTasks(){
   let from = document.getElementById("fromDate").value;
   let to = document.getElementById("toDate").value;
 
+  let fromDate = from ? new Date(from) : null;
+  let toDate = to ? new Date(to) : null;
+
   return tasks.filter(t=>{
     if(!t.deadline) return true;
 
-    if(from && t.deadline < from) return false;
-    if(to && t.deadline > to) return false;
+    let taskDate = new Date(t.deadline);
+
+    if(fromDate && taskDate < fromDate) return false;
+    if(toDate && taskDate > new Date(toDate.setHours(23,59,59,999))) return false;
 
     return true;
   });
@@ -766,6 +771,8 @@ try {
 applyLang();
 applyTextSize();
 render();
+document.getElementById("fromDate").addEventListener("input", render);
+document.getElementById("toDate").addEventListener("input", render);
 
 document.getElementById("textSizeSelect").value = textSize;
 
