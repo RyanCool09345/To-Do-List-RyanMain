@@ -68,7 +68,11 @@ input,select,textarea,button{
   border-radius:16px;
 }
 body.light .filter-section{background:#e0e0e0;}
-.filter-title{font-family:'Fredoka';margin-bottom:8px;}
+.filter-title{
+  font-family:'Fredoka';
+  margin-bottom:8px;
+  font-size:calc(var(--text-size) + 2px);
+}
 .filter-row{display:flex;gap:10px;}
 .filter-row input{flex:1;}
 
@@ -578,6 +582,7 @@ function renderFilterPreview(){
   if(!filtered.length) return;
 
   filtered.forEach(t=>{
+  let realTask = tasks.find(task => task.createdAt === t.createdAt);
     let div = document.createElement("div");
 
     // 🔥 BUG 4 FIX (bigger UI)
@@ -596,10 +601,10 @@ function renderFilterPreview(){
           font-size:12px;
           padding:3px 8px;
           border-radius:8px;
-          background:${t.done ? "limegreen" : "#555"};
+          background:${realTask && realTask.done ? "limegreen" : "#555"};
           color:white;
         ">
-          ${t.done ? "DONE" : "TODO"}
+          ${realTask && realTask.done ? "DONE" : "TODO"}
         </span>
       </div>
 
