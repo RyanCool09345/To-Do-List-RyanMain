@@ -420,9 +420,9 @@ function applyLang(){
   document.getElementById("textSizeLabel").textContent = t.textSize;
 
   document.getElementById("priorityInput").innerHTML=`
-  <option value="high">🔴</option>
-  <option value="medium">🟡</option>
-  <option value="low">🟢</option>`;
+  <option value="high">🔴 HIGH</option>
+  <option value="medium">🟡 MEDIUM</option>
+  <option value="low">🟢 LOW</option>`;
 }
   function applyTextSize(){
   let sizeMap = {
@@ -694,9 +694,9 @@ li.innerHTML=`
 <div class="task-bottom">
 <input type="date" value="${t.deadline||''}" onchange="updateDate(${t.index},this.value)">
 <select onchange="updatePriority(${t.index},this.value)">
-<option value="high" ${t.priority === "high" ? "selected" : ""}>🔴</option>
-<option value="medium" ${t.priority === "medium" ? "selected" : ""}>🟡</option>
-<option value="low" ${t.priority === "low" ? "selected" : ""}>🟢</option>
+<option value="high" ${t.priority === "high" ? "selected" : ""}>🔴 HIGH</option>
+<option value="medium" ${t.priority === "medium" ? "selected" : ""}>🟡 MEDIUM</option>
+<option value="low" ${t.priority === "low" ? "selected" : ""}>🟢 LOW</option>
 </select>
 </div>
 
