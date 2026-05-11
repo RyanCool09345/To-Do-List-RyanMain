@@ -563,9 +563,10 @@ opt.value=m;
 opt.textContent=m;
 select.appendChild(opt);
 });
-
-select.onchange=()=>{
-  let [year, month] = select.value.split("-");
+  
+if(!select.value) return;
+  
+let [year, month] = select.value.split("-");
 
 const monthNames = [
   "January","February","March","April","May","June",
