@@ -597,10 +597,12 @@ else{
 document.getElementById("monthlyStatus").textContent = statusText;
 pieChart.data.datasets[0].data=data;
 pieChart.update();
-};
-  if(select.value){
-  select.onchange();
-}
+  pieChart.data.datasets[0].data = data;
+  pieChart.update();
+
+  if (select.value) {
+    select.onchange();
+  }
 }
 
 /* FILTER */
@@ -616,8 +618,13 @@ function getFilteredTasks(){
 
     let taskDate = new Date(t.deadline);
 
-    if(fromDate && taskDate < fromDate) return false;
-    if(toDate && taskDate > new Date(toDate.setHours(23,59,59,999))) return false;
+    if (fromDate && taskDate < fromDate) return false;
+
+if (toDate) {
+  let end = new Date(toDate);
+  end.setHours(23,59,59,999);
+  if (taskDate > end) return false;
+}
 
     return true;
   });
@@ -637,7 +644,10 @@ function renderFilterPreview(){
 
   let filtered = getFilteredTasks();
 
-  if(!filtered.length) return;
+if(!filtered.length){
+  container.innerHTML = "<div style='opacity:0.6'>No tasks found</div>";
+  return;
+}
 
   filtered.forEach(t=>{
   let realTask = tasks.find(task => task.createdAt === t.createdAt);
@@ -771,6 +781,7 @@ ul.appendChild(li);
 
 document.querySelector(".chart-section").classList.toggle("open",openSections.chart);
 
+if (chart && chart.data) updateChart();
 updateChart();
 generateMonthly();
 applyLang();
@@ -890,8 +901,8 @@ try {
 applyLang();
 applyTextSize();
 render();
-document.getElementById("fromDate").addEventListener("input", render);
-document.getElementById("toDate").addEventListener("input", render);
+document.getElementById("fromDate").addEventListener("input", renderFilterPreview);
+document.getElementById("toDate").addEventListener("input", renderFilterPreview);
 
 document.getElementById("textSizeSelect").value = textSize;
 
