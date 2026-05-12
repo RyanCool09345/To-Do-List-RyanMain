@@ -238,17 +238,23 @@ body.light .chart-section{background:#e0e0e0;}
 .report-right{
   flex:1 1 260px;
   min-width:0;
+
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
 }
 
 .report-right h1{
   font-family:'Fredoka';
   font-size:clamp(36px, 8vw, 64px);
+  margin-top:0;
   margin-bottom:20px;
 }
 
 #reportStats{
   font-size:clamp(20px, 5vw, 30px);
   line-height:1.6;
+  margin-top:0;
 }
 #advancedTextToggle:hover{
   opacity:1;
