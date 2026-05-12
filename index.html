@@ -211,10 +211,8 @@ body.light .chart-section{background:#e0e0e0;}
 
 .report-layout{
   display:flex;
-  justify-content:center;
   align-items:flex-start;
-  gap:30px;
-  flex-wrap:wrap;
+  gap:40px;
   margin-top:30px;
   width:100%;
   overflow-x:hidden;
@@ -227,12 +225,14 @@ body.light .chart-section{background:#e0e0e0;}
 }
 
 .report-right{
-  flex:1 1 260px;
+  flex:1;
   min-width:0;
 
   display:flex;
   flex-direction:column;
   justify-content:flex-start;
+
+  padding-top:0;
 }
 
 .report-right h1{
@@ -245,7 +245,8 @@ body.light .chart-section{background:#e0e0e0;}
 #reportStats{
   font-size:clamp(20px, 5vw, 30px);
   line-height:1.6;
-  margin-top:0;
+
+  margin-top:-5px;
 }
 #advancedTextToggle:hover{
   opacity:1;
