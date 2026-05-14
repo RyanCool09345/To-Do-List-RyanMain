@@ -495,7 +495,21 @@ body.light #textSizeSlider{
 
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+const firebaseConfig = {
+  apiKey: "...",
+  authDomain: "...",
+  projectId: "...",
+  storageBucket: "...",
+  messagingSenderId: "...",
+  appId: "..."
+};
+
+const app = initializeApp(firebaseConfig);
+
+console.log("firebase connected");
 let tasks=[];
 let chart,pieChart;
 let openSections={high:false,medium:false,low:false,chart:false};
@@ -1055,21 +1069,6 @@ slider.oninput = () => {
 
   localStorage.setItem("textSizePx", size);
 };
-  <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCbqiJ5U87avtnhccLNXzLQyZ5ILdkTVFA",
-  authDomain: "copac-to-do-list.firebaseapp.com",
-  projectId: "copac-to-do-list",
-  storageBucket: "copac-to-do-list.firebasestorage.app",
-  messagingSenderId: "52393874320",
-  appId: "1:52393874320:web:6d2e4fafb96d7dc5715915"
-};
-
-const app = initializeApp(firebaseConfig);
-
-console.log("firebase connected");
 </script>
 </body>
 </html>
