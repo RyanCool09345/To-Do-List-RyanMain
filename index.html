@@ -98,7 +98,9 @@ body.light .filter-section{background:#e0e0e0;}
   padding:10px;
 
   max-height:65vh;
+
   overflow-y:auto;
+  overflow-x:hidden;
 }
 body.light .section{
   background:#ffffff;
@@ -172,12 +174,17 @@ textarea{
   gap:8px;
   margin-top:6px;
   width:100%;
+
+  overflow:hidden;
 }
 
 .task-bottom input,
 .task-bottom select{
   flex:1;
   min-width:0;
+}
+  .task-bottom select{
+  max-width:120px;
 }
   li{
   overflow:hidden;
@@ -325,6 +332,19 @@ body.light #textSizeSlider{
   .sections{
     grid-template-columns:1fr;
   }
+}
+  @media(max-width:600px){
+
+  .task-bottom{
+    flex-direction:column;
+  }
+
+  .task-bottom select,
+  .task-bottom input{
+    width:100%;
+    max-width:100%;
+  }
+
 }
 </style>
 </head>
