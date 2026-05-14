@@ -146,6 +146,39 @@ body.light li{
   border:1px solid #ddd;
 }
 
+/* Completed after deadline — "delayed" */
+li.delayed{
+  border:2px solid #ff4444;
+  box-shadow:0 0 14px rgba(255,68,68,0.22);
+  background:linear-gradient(145deg, rgba(50,22,22,0.55), rgba(35,18,18,0.4));
+}
+body.light li.delayed{
+  background:#fff5f5;
+  border:2px solid #e53935;
+  box-shadow:0 2px 12px rgba(229,57,53,0.18);
+}
+li.delayed .task-top textarea{
+  border-color:#ff5252;
+  color:#ffe0e0;
+}
+body.light li.delayed .task-top textarea{
+  border-color:#c62828;
+  color:#1a1a1a;
+  background:#fff8f8;
+}
+li.delayed .task-top textarea:focus{
+  outline:none;
+  border-color:#ff1744;
+  box-shadow:0 0 0 3px rgba(255,23,68,0.35);
+}
+li.delayed .date-text{
+  color:#ffab91;
+  opacity:1;
+}
+body.light li.delayed .date-text{
+  color:#bf360c;
+}
+
 @keyframes fadeIn{
   from{opacity:0;transform:translateY(6px);}
   to{opacity:1;transform:translateY(0);}
@@ -1042,6 +1075,9 @@ let ul=section.querySelector("ul");
 list.forEach(t=>{
 let li=document.createElement("li");
 if(t.done) li.classList.add("done");
+if(t.done&&t.deadline&&t.completedAt&&new Date(t.completedAt)>new Date(t.deadline)){
+  li.classList.add("delayed");
+}
 
 li.innerHTML=`
 <div class="task-top">
