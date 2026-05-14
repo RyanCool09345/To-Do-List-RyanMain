@@ -86,7 +86,7 @@ body.light .filter-section{background:#e0e0e0;}
 /* SECTIONS */
 .sections{
   display:grid;
-  grid-template-columns:repeat(3,minmax(280px,1fr));
+  grid-template-columns:repeat(3,minmax(0,1fr));
   gap:15px;
   margin-top:10px;
   align-items:start;
@@ -96,11 +96,12 @@ body.light .filter-section{background:#e0e0e0;}
   background:#1a1a1a;
   border-radius:16px;
   padding:10px;
+  min-width:0;
 
   max-height:65vh;
 
   overflow-y:auto;
-  overflow-x:hidden;
+  overflow-x:auto;
 }
 body.light .section{
   background:#ffffff;
@@ -159,10 +160,30 @@ li.done textarea{
   gap:10px;
   align-items:flex-start;
   width:100%;
+  min-width:0;
+}
+
+.task-top input[type="checkbox"]{
+  flex-shrink:0;
+  margin-top:4px;
 }
 
 .task-top textarea{
   min-width:0;
+  flex:1;
+  border:1px solid rgba(255,255,255,0.22);
+  border-radius:10px;
+  padding:10px 12px;
+  background:rgba(0,0,0,0.15);
+}
+body.light .task-top textarea{
+  border-color:rgba(0,0,0,0.18);
+  background:rgba(0,0,0,0.03);
+}
+.task-top textarea:focus{
+  outline:none;
+  border-color:#4FC3F7;
+  box-shadow:0 0 0 2px rgba(79,195,247,0.25);
 }
 textarea{
   flex:1;
@@ -176,8 +197,7 @@ textarea{
   gap:8px;
   margin-top:6px;
   width:100%;
-
-  overflow:hidden;
+  min-width:0;
 }
 
 .task-bottom input,
@@ -188,9 +208,6 @@ textarea{
   .task-bottom select{
   max-width:120px;
 }
-  li{
-  overflow:hidden;
-}
   textarea{
   width:100%;
   resize:vertical;
@@ -200,6 +217,7 @@ textarea{
 .delete-btn{
   background:red;
   width:40px;height:40px;
+  flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
   border-radius:10px;
 }
