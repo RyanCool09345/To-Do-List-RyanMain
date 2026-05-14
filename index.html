@@ -36,7 +36,7 @@ h1{text-align:center;font-family:'Fredoka';}
 .top-nav{display:flex;gap:10px;margin:15px 0;}
 .top-nav button{
   flex:1;padding:16px;border:none;border-radius:12px;
-  background:#4FC3F7;color:white;
+  background:#5bc0de;color:white;
   transition:0.25s;
 }
 .top-nav button:hover{transform:scale(1.05);}
@@ -284,10 +284,10 @@ body.light .chart-section{background:#e0e0e0;}
 .pie-chart-shell{
   position:relative;
   width:100%;
-  max-width:400px;
-  margin:8px auto 0;
+  max-width:320px;
+  margin:12px auto 0;
   aspect-ratio:1;
-  min-height:280px;
+  min-height:240px;
 }
 
 .pie-chart-shell canvas{
@@ -298,18 +298,31 @@ body.light .chart-section{background:#e0e0e0;}
 
 .report-layout{
   display:flex;
-  align-items:center;
+  align-items:flex-start;
   justify-content:space-between;
-  gap:clamp(24px,5vw,64px);
-  margin-top:24px;
+  gap:clamp(28px,5vw,56px);
+  margin-top:20px;
   width:100%;
   overflow-x:hidden;
 }
 
 .report-left{
-  flex:1 1 340px;
-  max-width:460px;
+  flex:1 1 360px;
+  max-width:480px;
   min-width:0;
+}
+
+.report-panel{
+  background:#1a1a1a;
+  border-radius:16px;
+  padding:22px 20px 24px;
+  border:1px solid rgba(255,255,255,0.06);
+}
+
+body.light .report-panel{
+  background:#ffffff;
+  border:1px solid #e0e0e0;
+  box-shadow:0 2px 12px rgba(0,0,0,0.06);
 }
 
 .report-left-inner{
@@ -348,13 +361,39 @@ body.light .month-select{
   background:#fff;
 }
 
+.report-pie-legend{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:14px 20px;
+  margin-top:18px;
+  font-size:calc(var(--text-size) - 1px);
+  opacity:0.95;
+}
+
+.report-legend-item{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+
+.report-legend-item .dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  flex-shrink:0;
+}
+.dot-completed{background:#76d275;}
+.dot-missed{background:#ff3b30;}
+.dot-late{background:#ffda5c;}
+
 .report-right{
   flex:1 1 280px;
   min-width:0;
   display:flex;
   flex-direction:column;
-  justify-content:center;
-  padding:8px 0 8px 12px;
+  justify-content:flex-start;
+  padding:12px 0 0 8px;
 }
 
 .report-main-heading{
@@ -503,12 +542,19 @@ body.light #textSizeSlider{
 <div class="report-layout">
 
   <div class="report-left">
-    <div class="report-left-inner">
-      <h2 id="monthlyTitle"></h2>
-      <p id="monthlyStatus" class="monthly-status"></p>
-      <select id="monthSelect" class="month-select"></select>
-      <div class="pie-chart-shell">
-        <canvas id="pieChart"></canvas>
+    <div class="report-panel">
+      <div class="report-left-inner">
+        <h2 id="monthlyTitle"></h2>
+        <p id="monthlyStatus" class="monthly-status"></p>
+        <select id="monthSelect" class="month-select"></select>
+        <div class="pie-chart-shell">
+          <canvas id="pieChart"></canvas>
+        </div>
+        <div class="report-pie-legend" id="reportPieLegend">
+          <span class="report-legend-item"><span class="dot dot-completed"></span><span id="legCompleted"></span></span>
+          <span class="report-legend-item"><span class="dot dot-missed"></span><span id="legMissed"></span></span>
+          <span class="report-legend-item"><span class="dot dot-late"></span><span id="legLate"></span></span>
+        </div>
       </div>
     </div>
   </div>
@@ -580,7 +626,7 @@ let textSize = localStorage.getItem("textSize") || "medium";
 const lang={
 en:{
 title:"📋 My To-Do List",
-tasks:"📝 Tasks",
+tasks:"📋 Tasks",
 reports:"📊 Reports",
 settings:"⚙️ Settings",
 add:"➕ Add Task",
@@ -598,6 +644,9 @@ statusBad:"You did bad this month.",
 pieCompleted:"Completed",
 pieMissed:"Missed",
 pieDelayed:"Delayed",
+legendCompleted:"Completed",
+legendMissed:"Missed",
+legendLate:"Late",
 theme:"Theme - 🌗",
 lang:"Language - 🌏",
 created:"Created on",
@@ -606,7 +655,7 @@ advanced:"Advanced"
 },
 vi:{
 title:"📋 Danh sách công việc",
-tasks:"📝 Nhiệm vụ",
+tasks:"📋 Nhiệm vụ",
 reports:"📊 Báo cáo",
 settings:"⚙️ Cài đặt",
 add:"➕ Thêm nhiệm vụ",
@@ -624,6 +673,9 @@ statusBad:"Bạn cần cố gắng hơn trong tháng này.",
 pieCompleted:"Hoàn thành",
 pieMissed:"Trễ hạn",
 pieDelayed:"Trễ nộp",
+legendCompleted:"Hoàn thành",
+legendMissed:"Trễ hạn",
+legendLate:"Trễ",
 theme:"Giao diện - 🌗",
 lang:"Ngôn ngữ - 🌏",
 created:"Tạo lúc",
@@ -647,6 +699,9 @@ function applyLang(){
   document.getElementById("advancedTextToggle").textContent = t.advanced;
   document.getElementById("textSizeLabel").textContent = t.textSize;
   document.getElementById("monthlyReportHeading").textContent = t.monthlyReportHeading;
+  document.getElementById("legCompleted").textContent = t.legendCompleted;
+  document.getElementById("legMissed").textContent = t.legendMissed;
+  document.getElementById("legLate").textContent = t.legendLate;
 
   document.getElementById("priorityInput").innerHTML=`
   <option value="high">🔴 HIGH</option>
@@ -678,56 +733,7 @@ document.getElementById(id).classList.add("active");
 }
 
 /* CHART */
-let monthPieLabelPluginRegistered=false;
-function ensureMonthPieLabelPlugin(){
-  if(monthPieLabelPluginRegistered)return;
-  monthPieLabelPluginRegistered=true;
-  Chart.register({
-    id:"monthPieOutsideLabels",
-    afterDatasetsDraw(chart){
-      if(chart.canvas.id!=="pieChart")return;
-      const meta=chart.getDatasetMeta(0);
-      if(!meta||!meta.data||meta.data.length===0)return;
-      const values=chart.data.datasets[0].data;
-      const sum=values.reduce((a,b)=>a+Number(b||0),0);
-      if(sum===0)return;
-      const L=lang[currentLang];
-      const short=[L.pieCompleted,L.pieMissed,L.pieDelayed];
-      const ctx=chart.ctx;
-      const isLight=document.body.classList.contains("light");
-      ctx.save();
-      ctx.font="600 14px Montserrat, system-ui, sans-serif";
-      ctx.textAlign="center";
-      ctx.textBaseline="middle";
-      meta.data.forEach((arc,i)=>{
-        const v=Number(values[i]||0);
-        if(v===0)return;
-        let x,y,startAngle,endAngle,outerRadius;
-        if(typeof arc.getProps==="function"){
-          const p=arc.getProps(["x","y","startAngle","endAngle","outerRadius"],true);
-          x=p.x;y=p.y;startAngle=p.startAngle;endAngle=p.endAngle;outerRadius=p.outerRadius;
-        }else{
-          ({x,y,startAngle,endAngle,outerRadius}=arc);
-        }
-        if(outerRadius==null||x==null)return;
-        const mid=(startAngle+endAngle)/2;
-        const dist=outerRadius+Math.max(24,outerRadius*0.14);
-        const lx=x+Math.cos(mid)*dist;
-        const ly=y+Math.sin(mid)*dist;
-        const line=`${short[i]} ${v}`;
-        ctx.strokeStyle=isLight?"rgba(255,255,255,0.9)":"rgba(0,0,0,0.55)";
-        ctx.lineWidth=isLight?2.5:3.5;
-        ctx.strokeText(line,lx,ly);
-        ctx.fillStyle=isLight?"#111":"#fff";
-        ctx.fillText(line,lx,ly);
-      });
-      ctx.restore();
-    }
-  });
-}
-
 function initCharts(){
-ensureMonthPieLabelPlugin();
 chart=new Chart(document.getElementById("chart"),{
   type:"bar",
   data:{
@@ -771,15 +777,15 @@ pieChart = new Chart(document.getElementById("pieChart"),{
       data:[0,0,0],
       backgroundColor:["#76d275","#ff3b30","#ffda5c"],
       borderColor:"#121212",
-      borderWidth:3,
-      hoverOffset:6
+      borderWidth:2,
+      hoverOffset:4
     }]
   },
 options:{
   responsive:true,
   maintainAspectRatio:false,
-  cutout:"58%",
-  layout:{padding:{top:28,bottom:28,left:36,right:36}},
+  cutout:"52%",
+  layout:{padding:12},
   plugins:{
       legend:{
         display:false
