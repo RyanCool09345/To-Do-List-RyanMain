@@ -717,36 +717,36 @@ function renderFilterPreview(){
     return;
   }
 
+
   let filtered = getFilteredTasks();
 
   filtered.forEach(t=>{
-  let realTask = tasks.find(task => task.createdAt === t.createdAt);
+    let realTask = tasks.find(task => task.createdAt === t.createdAt);
+
     let div = document.createElement("div");
 
-    // 🔥 BUG 4 FIX (bigger UI)
     div.style.background = "#2a2a2a";
     div.style.padding = "12px";
     div.style.borderRadius = "12px";
     div.style.marginBottom = "8px";
-    div.style.fontSize = "15px";
-    div.style.border = "1px solid rgba(255,255,255,0.08)";
 
-    // 🔥 BUG 2 FIX (done / not done)
     div.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="display:flex;justify-content:space-between;">
         <span>${t.text}</span>
+
         <span style="
-          font-size:12px;
+          background:${realTask && realTask.done ? "limegreen" : "#555"};
           padding:3px 8px;
           border-radius:8px;
-          background:${realTask && realTask.done ? "limegreen" : "#555"};
-          color:white;
+          font-size:12px;
         ">
           ${realTask && realTask.done ? "DONE" : "TODO"}
         </span>
       </div>
 
-      ${t.deadline ? `<div style="font-size:13px;margin-top:5px;">📅 ${t.deadline}</div>` : ""}
+      <div style="margin-top:5px;font-size:13px;">
+        📅 ${t.deadline}
+      </div>
     `;
 
     container.appendChild(div);
@@ -757,8 +757,6 @@ function renderFilterPreview(){
 function render(){
 let sections=document.getElementById("sections");
 sections.innerHTML="";
-
-let filtered = getFilteredTasks();
 
 let filtered = tasks;
 let groups={high:[],medium:[],low:[]};
